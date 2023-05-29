@@ -17,7 +17,7 @@ OBSTACLE_SPAWN_TIME = LEVEL_UP_TIME // OBSTACLES_PER_LEVEL  # Spawn obstacles ev
 # Set up assets: colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
+RED = (0, 0, 255) #(255, 0, 0)
 
 # Create the game window
 pygame.display.set_caption("My Game")
