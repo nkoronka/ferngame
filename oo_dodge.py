@@ -13,6 +13,7 @@ SCROLL_SPEED = 5
 LEVEL_UP_TIME = 8000  # Level up every 8 seconds
 OBSTACLES_PER_LEVEL = 6
 OBSTACLE_SPAWN_TIME = LEVEL_UP_TIME // OBSTACLES_PER_LEVEL  # Spawn obstacles every 2 seconds within 8 seconds interval
+INITIAL_HEALTH = 100
 
 # Set up assets: colors
 WHITE = (255, 255, 255)
@@ -35,13 +36,13 @@ pygame.time.set_timer(LEVEL_UP, LEVEL_UP_TIME)
 SPAWN_OBSTACLE = pygame.USEREVENT + 2
 
 # Font for level display
-font = pygame.font.Font(None, 36)
+font = pygame.font.Font(None, 25)
 
 class Player:
     def __init__(self, x, y, width, height, speed):
         self.rect = pygame.Rect(x, y, width, height)
         self.speed = speed
-        self.health = 100  # Initial health
+        self.health = INITIAL_HEALTH  # Initial health
 
     def move(self, keys):
         if keys[pygame.K_a]:
@@ -112,24 +113,42 @@ class Game:
         self.level = 1
         self.obstacles_spawned = 0
         self.obstacles.clear()
+        self.player.health = INITIAL_HEALTH
         pygame.time.set_timer(SPAWN_OBSTACLE, OBSTACLE_SPAWN_TIME)
 
     def update(self):
         if self.state == GAME:
             self.player.move(pygame.key.get_pressed())
 
-            # Update obstacle positions and remove if off screen
+            # Update obstacle positions and remove if off-screen
             self.obstacles = [obs for obs in self.obstacles if obs.rect.x > -OBSTACLE_WIDTH]
             for obs in self.obstacles:
                 obs.update()
 
             # Check for collisions
-            if any(obs.rect.colliderect(self.player.rect) for obs in self.obstacles):
-                self.state = GAME_OVER
+            for obs in self.obstacles:
+                if obs.rect.colliderect(self.player.rect):
+                    # if any(obs.rect.colliderect(self.player.rect) for obs in self.obstacles):
+                    self.player.health -= 10
+                    if self.player.health <= 0:
+                        self.state = GAME_OVER
+                    self.remove_obstacle(obs)
 
     def draw_health_bar(self):
-        # Draw the health on top of it (will decrease)
-        pygame.draw.rect(screen, GREEN, (11, 11, self.player.health, 10))
+        # Draw the health bar
+        pygame.draw.rect(screen, GREEN, (71, 11, self.player.health, 10))
+
+        # Create font object once and render the text for health value and label
+        font = pygame.font.Font(None, 20)
+
+        # Create health label
+        health_label = font.render("Health:", True, GREEN)
+        screen.blit(health_label, (20, 10))
+
+        # Create health value label
+        health_value = font.render(str(self.player.health), True, GREEN)
+        value_width = health_value.get_width()
+        screen.blit(health_value, (200 - value_width, 10))
 
     def draw(self):
         if self.state == MENU:
@@ -156,6 +175,9 @@ class Game:
             screen.blit(menu_text, menu_rect)
         pygame.display.flip()
 
+    def remove_obstacle(self, obstacle):
+        if obstacle in self.obstacles:
+            self.obstacles.remove(obstacle)
 
 game = Game()
 
