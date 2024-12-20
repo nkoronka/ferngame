@@ -14,13 +14,15 @@ LEVEL_UP_TIME = 8000  # Level up every 8 seconds
 OBSTACLES_PER_LEVEL = 6
 OBSTACLE_SPAWN_TIME = LEVEL_UP_TIME // OBSTACLES_PER_LEVEL  # Spawn obstacles every 2 seconds within 8 seconds interval
 
+GAME_NAME = "My Game"
+
 # Set up assets: colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0) #(255, 0, 0)
 
 # Create the game window
-pygame.display.set_caption("My Game")
+pygame.display.set_caption(GAME_NAME)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Create player

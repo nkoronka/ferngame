@@ -14,6 +14,7 @@ LEVEL_UP_TIME = 8000  # Level up every 8 seconds
 OBSTACLES_PER_LEVEL = 6
 OBSTACLE_SPAWN_TIME = LEVEL_UP_TIME // OBSTACLES_PER_LEVEL  # Spawn obstacles every 2 seconds within 8 seconds interval
 INITIAL_HEALTH = 100
+PLAYER_SPEED = 10
 
 # Set up assets: colors
 WHITE = (255, 255, 255)
@@ -45,13 +46,13 @@ class Player:
         self.health = INITIAL_HEALTH  # Initial health
 
     def move(self, keys):
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.rect.x -= self.speed
-        if keys[pygame.K_d]:
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.rect.x += self.speed
-        if keys[pygame.K_w]:
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
             self.rect.y -= self.speed
-        if keys[pygame.K_s]:
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
             self.rect.y += self.speed
 
         # Keep player on the screen
@@ -71,7 +72,7 @@ class Game:
         self.state = MENU
         self.level = 1
         self.obstacles_spawned = 0
-        self.player = Player(WIDTH / 2, HEIGHT / 2, 50, 50, 5)
+        self.player = Player(WIDTH / 2, HEIGHT / 2, 50, 50, PLAYER_SPEED)
         self.obstacles = []
 
     def handle_event(self, event):
